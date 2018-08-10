@@ -1,0 +1,39 @@
+language: go
+
+go:
+  - 1.10.3
+
+branches:
+  only:
+    - source
+
+env:
+ global:
+   - GH_REF: github.com/fydy/navi.git
+
+
+sudo: required
+
+git:
+  submodules: false
+
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+
+install:
+  - export HUGO_VERSION=0.46
+  - sudo pip install Pygments
+  - wget https://github.com/spf13/hugo/releases/download/v$HUGO_VERSION/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
+  - tar xzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz
+  - chmod a+x hugo
+
+script:
+  - ./hugo
+
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "fydy"
+  - git config user.email "edu@yuns.me"
+  - git add .
+  - git commit -m "Update docs"
+  - git push --quiet --force https://$navi@github.com/fydy/navi.git master
